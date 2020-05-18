@@ -1,64 +1,56 @@
 package flashcards;
 
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class Main {
-    public static Scanner scanner = new Scanner(System.in);
-
-    static String inputString() {
-        String input = scanner.nextLine();
-        return input;
-    }
-
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        var map = new TreeMap<>();
+        map.put("Niggers", "Black");
+        map.put("Russian", "V stoilo");
+        map.put("Kavkaz", "Sila");
+        map.put("Alpi", "Lovkost");
+        FlashCardDeck testMap = new FlashCardDeck(map);
+        testMap.containsOfMap();
+        testMap.addCard("Chlen", "Pizda");
+        testMap.containsOfMap();
+
+        testMap.removeCard("Alpi");
+        testMap.containsOfMap();
+        testMap.getEntry("Chlen");
 
 
-        // FlashCard flashCard = new FlashCard(term, def);//создаю конструктором
-        //   String ans = scanner.next();
+        /*
+        String term = scanner.nextLine();
+        String def = scanner.nextLine();
+        forTest.addCard(term,def); */
 
-        game(createArrayOfCards());
+
+        //  тут уже играешь
+        //  String ans = scanner.next();
+        //  game(flashCard, ans);
 
     }
 
 
-    public static void game(FlashCard[] arrayOfCards) {
-        for (int i = 0; i <= arrayOfCards.length - 1; i++) {
-            System.out.println("Print the definition of \"" + arrayOfCards[i].getTerm() + "\"");
-            String ans = scanner.nextLine();
-            if (ans.equals(arrayOfCards[i].getDefinition())) {
-                System.out.println("Correct answer.");
-                continue;
-            } else {
-                System.out.println("Wrong answer. The correct one is \"" + arrayOfCards[i].getDefinition() + "\"");
-                continue;
-            }
+    public static void game(FlashCard flashCard, String ans) {
+        if (flashCard.checkAnswer(ans)) {             //Заглушка для прохождения задания
+            System.out.println("Your answer is right!");
+        } else {
+            System.out.println("Your answer is wrong...");
         }
-
     }
-
-    public static FlashCard[] createArrayOfCards() {
-        System.out.println("Input the number of cards:");
-        int howMuchCardCreate = scanner.nextInt();
-        inputString();
-        FlashCard[] arrayOfCards = new FlashCard[howMuchCardCreate];
-        for (int numberOfCard = 1; numberOfCard <= howMuchCardCreate; numberOfCard++) {
-            System.out.println("The card #" + numberOfCard + ":");
-            String term = scanner.nextLine();
-            System.out.println("Print the definition of the card #" + numberOfCard + ":");
-            String def = scanner.nextLine();
-            FlashCard flashCard = new FlashCard(term, def);
-            arrayOfCards[numberOfCard - 1] = flashCard;
-        }
-        return arrayOfCards;
-    }
-
 }
 
 
 class FlashCard {
     String term;
     String definition;
-
 
     public FlashCard(String card, String definition) {
         this.term = card;
@@ -80,13 +72,50 @@ class FlashCard {
     public String getCardInfo() {
         return "Card:\n" + term + "\nDefinition:\n" + definition;
     }
+}
 
+class FlashCardDeck<K, V> {
+    TreeMap<String, String> map;
 
-    static public FlashCard createCard(String term, String definition) {
-        FlashCard flashCard = new FlashCard(term, definition); //бесполезный метод, создаёт одну карту.
-        flashCard.term = term;
-        flashCard.definition = definition;
-        return flashCard;
+    public FlashCardDeck(TreeMap<String, String> map) {
+        this.map = map;
     }
+
+    public FlashCardDeck() {
+
+    }
+
+    void containsOfMap() {
+        System.out.println(map.entrySet().stream().map(e -> e.getKey() + " " + e.getValue()).collect(Collectors.joining(" | ")));
+
+    }
+
+    void addCard(String term, String def) {
+        map.put(term, def);
+    }
+
+    void addPackOfCard(int countForAdding) {
+        for (int i = 0; i < countForAdding; i++) {
+            Scanner scanner = new Scanner(System.in);
+            String term = scanner.nextLine();
+            String def = scanner.nextLine();
+            addCard(term, def);
+        }
+    }
+
+    Map.Entry getEntry(String term) {
+        Map.Entry<String, String> q =  map.ceilingEntry(term);
+        System.out.println(q.toString());
+        return q;
+    }
+
+    void removeCard(String term) {
+        this.map.remove(term);
+    }
+
+    String getDefinition(String term) {
+        return map.get(term);
+    }
+
 
 }
