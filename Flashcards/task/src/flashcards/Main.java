@@ -1,34 +1,31 @@
 package flashcards;
 
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
+    public static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        var map = new TreeMap<>();
-        map.put("Niggers", "Black");
-        map.put("Russian", "V stoilo");
-        map.put("Kavkaz", "Sila");
-        map.put("Alpi", "Lovkost");
-        FlashCardDeck testMap = new FlashCardDeck(map);
+        var blank = new LinkedHashMap<>();
+        blank.put("Niggers", "Black");
+        blank.put("Russian", "V stoilo");
+        blank.put("Kavkaz", "Sila");
+        blank.put("Alpi", "Lovkost");
+        FlashCardDeck testMap = new FlashCardDeck(blank);
+
+        //testMap.containsOfMap();
+        //testMap.addCard("Chlen", "Pizda");
+        //testMap.containsOfMap();
+
+        //testMap.removeCard("Alpi");
+        //testMap.printEntry("Kavkaz");
+        //testMap.printEntry("Kavkas");
+
+        //initializingOfDeck(testMap);
         testMap.containsOfMap();
-        testMap.addCard("Chlen", "Pizda");
-        testMap.containsOfMap();
-
-        testMap.removeCard("Alpi");
-        testMap.containsOfMap();
-        testMap.getEntry("Chlen");
-
-
-        /*
-        String term = scanner.nextLine();
-        String def = scanner.nextLine();
-        forTest.addCard(term,def); */
+        game(testMap);
 
 
         //  тут уже играешь
@@ -37,57 +34,59 @@ public class Main {
 
     }
 
-
-    public static void game(FlashCard flashCard, String ans) {
-        if (flashCard.checkAnswer(ans)) {             //Заглушка для прохождения задания
-            System.out.println("Your answer is right!");
-        } else {
-            System.out.println("Your answer is wrong...");
+    public static void initializingOfDeck(FlashCardDeck<String, String> map) {
+        System.out.println("Input the number of cards:");
+        int howMuch = scanner.nextInt();
+        inputString();
+        for (int i = 1; i <= howMuch; i++) {
+            System.out.printf("The card #%s:\n", i);
+            String term = scanner.nextLine();
+            if (map.cardIsCreated(term)) {
+                while (true) {
+                    System.out.printf("The card \"%s\" already exists. Try again:\n", term);
+                    term = scanner.nextLine();
+                    if (!map.cardIsCreated(term)) {
+                        break;
+                    }
+                }
+            }
+            System.out.printf("The definition of the card #%s:\n", i);
+            String def = scanner.nextLine();
+            map.addCard(term, def);
         }
     }
-}
 
-
-class FlashCard {
-    String term;
-    String definition;
-
-    public FlashCard(String card, String definition) {
-        this.term = card;
-        this.definition = definition;
+    public static void game(FlashCardDeck<String, String> map) {
+        for (String s : map.getKeys()) {
+            System.out.printf("Print the definition of \"%s\":\n", s);
+            String def = scanner.nextLine();
+            if (def.equals(map.getDefinition(s))) {
+                System.out.println("Correct answer.");
+            } else {
+                System.out.println("Wrong answer");
+            }
+        }
     }
 
-    public String getTerm() {
-        return term;
-    }
 
-    public String getDefinition() {
-        return definition;
-    }
-
-    public boolean checkAnswer(String ans) {
-        return ans.equals(getDefinition());
-    }
-
-    public String getCardInfo() {
-        return "Card:\n" + term + "\nDefinition:\n" + definition;
+    static String inputString() {
+        String empty = scanner.nextLine();
+        return empty;
     }
 }
 
 class FlashCardDeck<K, V> {
-    TreeMap<String, String> map;
+    LinkedHashMap<String, String> map;
 
-    public FlashCardDeck(TreeMap<String, String> map) {
+    public FlashCardDeck(LinkedHashMap<String, String> map) {
         this.map = map;
     }
 
     public FlashCardDeck() {
-
     }
 
     void containsOfMap() {
         System.out.println(map.entrySet().stream().map(e -> e.getKey() + " " + e.getValue()).collect(Collectors.joining(" | ")));
-
     }
 
     void addCard(String term, String def) {
@@ -103,10 +102,20 @@ class FlashCardDeck<K, V> {
         }
     }
 
-    Map.Entry getEntry(String term) {
-        Map.Entry<String, String> q =  map.ceilingEntry(term);
-        System.out.println(q.toString());
-        return q;
+    Set<String> getKeys() {
+        return this.map.keySet();
+    }
+
+    boolean cardIsCreated(String term) {
+        return map.containsKey(term);
+    }
+
+    void printEntry(String term) {
+        if (map.containsKey(term)) {
+            System.out.println(term + " " + map.get(term));
+        } else {
+            System.out.printf("%s Not founded", term);
+        }
     }
 
     void removeCard(String term) {
