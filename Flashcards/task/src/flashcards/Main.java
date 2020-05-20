@@ -7,63 +7,67 @@ public class Main {
     public static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-
+        /*
         var blank = new LinkedHashMap<>();
-        blank.put("Niggers", "Black");
-        blank.put("Russian", "V stoilo");
-        blank.put("Kavkaz", "Sila");
-        blank.put("Alpi", "Lovkost");
-        FlashCardDeck testMap = new FlashCardDeck(blank);
-
-        //testMap.containsOfMap();
-        //testMap.addCard("Chlen", "Pizda");
-        //testMap.containsOfMap();
-
-        //testMap.removeCard("Alpi");
-        //testMap.printEntry("Kavkaz");
-        //testMap.printEntry("Kavkas");
-
-        //initializingOfDeck(testMap);
-        testMap.containsOfMap();
+        blank.put("Хуй", "Предмет для рта");
+        blank.put("Русский", "Человек живущий в России");
+        blank.put("Приора", "Автомобиль для работника завода");
+        blank.put("Димас", "Ловкий малый");
+        FlashCardDeck testMap = new FlashCardDeck(blank); */
+        FlashCardDeck testMap = new FlashCardDeck();
+        initializingOfDeck(testMap);
+        //  testMap.containsOfMap();
         game(testMap);
 
 
-        //  тут уже играешь
-        //  String ans = scanner.next();
-        //  game(flashCard, ans);
-
     }
 
-    public static void initializingOfDeck(FlashCardDeck<String, String> map) {
+    public static void initializingOfDeck(FlashCardDeck map) {
         System.out.println("Input the number of cards:");
         int howMuch = scanner.nextInt();
         inputString();
         for (int i = 1; i <= howMuch; i++) {
             System.out.printf("The card #%s:\n", i);
             String term = scanner.nextLine();
-            if (map.cardIsCreated(term)) {
+            if (map.termIsCreated(term)) {
                 while (true) {
                     System.out.printf("The card \"%s\" already exists. Try again:\n", term);
                     term = scanner.nextLine();
-                    if (!map.cardIsCreated(term)) {
+                    if (!map.termIsCreated(term)) {
                         break;
                     }
                 }
             }
+
             System.out.printf("The definition of the card #%s:\n", i);
             String def = scanner.nextLine();
+            if (map.defIsCreated(def)) {
+                while (true) {
+                    System.out.printf("The definition \"%s\" already exists. Try again:\n", def);
+                    def = scanner.nextLine();
+                    if (!map.defIsCreated(def)) {
+                        break;
+                    }
+                }
+            }
+
             map.addCard(term, def);
         }
     }
 
-    public static void game(FlashCardDeck<String, String> map) {
-        for (String s : map.getKeys()) {
+    public static void game(FlashCardDeck map) {
+        for (String s : map.getSetTerm()) {
             System.out.printf("Print the definition of \"%s\":\n", s);
             String def = scanner.nextLine();
+
             if (def.equals(map.getDefinition(s))) {
                 System.out.println("Correct answer.");
             } else {
-                System.out.println("Wrong answer");
+                if (map.getDefs().contains(def)) {
+                    System.out.println("Wrong answer. The correct one is \"" + map.getDefinition(s) + "\", you've just written the definition of \"" + map.getTermByDef(def) + "\".\n");
+                } else {
+                    System.out.println("Wrong answer. The correct one is \"" + map.getDefinition(s) + "\".");
+                }
             }
         }
     }
@@ -75,7 +79,7 @@ public class Main {
     }
 }
 
-class FlashCardDeck<K, V> {
+class FlashCardDeck {
     LinkedHashMap<String, String> map;
 
     public FlashCardDeck(LinkedHashMap<String, String> map) {
@@ -83,6 +87,7 @@ class FlashCardDeck<K, V> {
     }
 
     public FlashCardDeck() {
+        this.map = new LinkedHashMap<>();
     }
 
     void containsOfMap() {
@@ -102,12 +107,55 @@ class FlashCardDeck<K, V> {
         }
     }
 
-    Set<String> getKeys() {
+    int size() {
+        return this.map.size();
+    }
+
+    Set<String> getSetTerm() {
         return this.map.keySet();
     }
 
-    boolean cardIsCreated(String term) {
+    Collection<String> getDefs() {
+        return this.map.values();
+    }
+
+    String getTermByDef(String def) {
+        String key = null;
+        if (this.map.containsValue(def)) {
+            for (String entry : map.keySet()) {
+                if (map.get(entry).equals(def)) {
+                    key = entry;
+                }
+            }
+        }
+        return key;
+
+    }
+
+    Set<String> getSetOfDefinitions() {
+        Set<String> values = new HashSet<>();
+        for (String value : map.keySet()
+        ) {
+            values.add(this.getDefinition(value));
+        }
+        return values;
+    }
+
+    boolean termIsCreated(String term) {
         return map.containsKey(term);
+    }
+
+    boolean defIsCreated(String def) {
+
+        if (map.values().contains(def)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    boolean isEmpty() {
+        return this.map.isEmpty();
     }
 
     void printEntry(String term) {
@@ -125,6 +173,4 @@ class FlashCardDeck<K, V> {
     String getDefinition(String term) {
         return map.get(term);
     }
-
-
 }
