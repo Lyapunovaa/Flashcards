@@ -16,6 +16,15 @@ class FlashCardDeck {
     }
 
 
+    void addError(String term) {
+        for (Pair pair : map.keySet()) {
+            if (pair.getTerm().equals(term)) {
+                int value = map.get(pair);
+                map.put(pair, value + 1);
+            }
+        }
+    }
+
     void addCard(String term, String def) {
         Pair pair = new Pair(term, def);
         map.put(pair, 0);
@@ -83,7 +92,7 @@ class FlashCardDeck {
     String printEntryForExport(String term) {
         for (Pair pair : map.keySet()) {
             if (pair.getTerm().equals(term)) {
-                String summary = pair.getTerm() + " " + pair.getDef();
+                String summary = pair.getTerm() + "|" + pair.getDef() + "|" + map.get(pair) + "\r\n";
                 return summary;
             }
         }
@@ -108,22 +117,30 @@ class FlashCardDeck {
         return null;
     }
 
-    void updateOrAddCard(String term, String def) {
-       for (Pair pair: map.keySet()){
-           if (pair.getTerm().equals(term)){
-               map.remove(pair);
-               Pair newPair = new Pair(term,def);
-               map.put(newPair, 0); //TODO надо дописать приём Integer
-           }
-       }
+    void updateOrAddCard(String term, String def, Integer errors) {
+        Pair newPair = new Pair(term, def);
+        for (Pair pair : map.keySet()) {
+            if (pair.getTerm().equals(term)) {
+                map.remove(pair);
+                map.put(newPair, errors);
+                break;
+            }
+        }
+        map.put(newPair, errors);
+
+
     }
 
 
     String getRandomTerm() {
-        Random random = new Random();
-        int randomCardNumber = random.nextInt(this.map.size());
-        Object[] terms = this.getSetTerm().toArray();
-        return terms[randomCardNumber].toString();
+        if (map.isEmpty()) {
+            return null;
+        } else {
+            Random random = new Random();
+            int randomCardNumber = random.nextInt(this.map.size());
+            Object[] terms = this.getSetTerm().toArray();
+            return terms[randomCardNumber].toString();
+        }
     }
 }
 

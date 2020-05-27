@@ -29,9 +29,15 @@ public class Game {
                 break;
             }
             case "ask": {
-                ask();
-                menu();
-                break;
+                if (flashCardDeck.isEmpty()) {
+                    System.out.println("No cards in deck");
+                    menu();
+                } else {
+                    ask();
+                    menu();
+                    break;
+                }
+
             }
             case "remove": {
                 remove();
@@ -65,6 +71,7 @@ public class Game {
 
     public void ask() {
 
+
         System.out.println("How many times to ask?");
         int howMuchTimeToAsk = scanner.nextInt();
         repairScanner();
@@ -79,10 +86,12 @@ public class Game {
                     if (flashCardDeck.getDefinition(randomTerm).equals(def)) {
                         System.out.println("Correct answer.");
                     } else {
+                        flashCardDeck.addError(randomTerm);
                         System.out.println("Wrong answer. The correct one is \"" + flashCardDeck.getDefinition(randomTerm) +
                                 "\", you've just written the definition of \"" + flashCardDeck.getTermByDef(def) + "\".\n");
                     }
                 } else {
+                    flashCardDeck.addError(randomTerm);
                     System.out.println("Wrong answer. The correct one is \"" + flashCardDeck.getDefinition(randomTerm) + "\".");
                 }
 
@@ -163,7 +172,8 @@ public class Game {
                 String unparsed = reader.nextLine();
                 String reg = "\\|";
                 String[] parsed = unparsed.split(reg);
-                flashCardDeck.updateOrAddCard(parsed[0], parsed[1]);
+                flashCardDeck.updateOrAddCard(parsed[0], parsed[1], Integer.parseInt(parsed[2]));
+                System.out.println(parsed[0] + parsed[2]);
                 countOfStrings++;
             }
             read.close();
@@ -180,12 +190,5 @@ public class Game {
         }
 
     }
-
-    //Эксперементы
-    Map <FlashCardDeck, Integer> mapWithStat = new LinkedHashMap();
-
-
-
-
 
 }
