@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Game {
@@ -178,5 +180,12 @@ public class Game {
         }
 
     }
+
+    //Эксперементы
+    Map <FlashCardDeck, Integer> mapWithStat = new LinkedHashMap();
+
+
+
+
 
 }

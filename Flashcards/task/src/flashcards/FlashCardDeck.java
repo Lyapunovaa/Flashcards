@@ -3,11 +3,13 @@ package flashcards;
 import java.util.*;
 
 class FlashCardDeck {
-    LinkedHashMap<String, String> map;
+    LinkedHashMap<Pair, Integer> map;
 
-    public FlashCardDeck(LinkedHashMap<String, String> map) {
+
+    public FlashCardDeck(LinkedHashMap<Pair, Integer> map) {
         this.map = map;
     }
+
 
     public FlashCardDeck() {
         this.map = new LinkedHashMap<>();
@@ -15,7 +17,8 @@ class FlashCardDeck {
 
 
     void addCard(String term, String def) {
-        map.put(term, def);
+        Pair pair = new Pair(term, def);
+        map.put(pair, 0);
     }
 
 
@@ -24,35 +27,52 @@ class FlashCardDeck {
     }
 
     Set<String> getSetTerm() {
-        return this.map.keySet();
+        Set<String> setOfTerms = new TreeSet<>();
+        for (Pair pair : map.keySet()
+        ) {
+            setOfTerms.add(pair.getTerm());
+        }
+        return setOfTerms;
     }
 
-    Collection<String> getDefs() {
-        return this.map.values();
+    Set<String> getDefs() {
+        Set<String> setOfDefs = new TreeSet<>();
+        for (Pair pair : map.keySet()
+        ) {
+            setOfDefs.add(pair.getDef());
+        }
+        return setOfDefs;
     }
 
     String getTermByDef(String def) {
-        String key = null;
-        if (this.map.containsValue(def)) {
-            for (String entry : map.keySet()) {
-                if (map.get(entry).equals(def)) {
-                    key = entry;
-                }
+        for (Pair pair : map.keySet()
+        ) {
+            if (pair.getDef().equals(def)) {
+                return pair.getTerm();
             }
         }
-        return key;
+        return null;
     }
 
-    Collection<String> getSetOfDefinitions() {
-        return this.map.values();
-    }
 
     boolean termIsCreated(String term) {
-        return map.containsKey(term);
+        for (Pair pair : map.keySet()
+        ) {
+            if (pair.getTerm().equals(term)) {
+                return true;
+            } else return false;
+        }
+        return false;
     }
 
     boolean defIsCreated(String def) {
-        return map.containsValue(def);
+        for (Pair pair : map.keySet()
+        ) {
+            if (pair.getDef().equals(def)) {
+                return true;
+            } else return false;
+        }
+        return false;
     }
 
     boolean isEmpty() {
@@ -61,25 +81,43 @@ class FlashCardDeck {
 
 
     String printEntryForExport(String term) {
-        return (term + "|" + map.get(term) + "\r\n");
+        for (Pair pair : map.keySet()) {
+            if (pair.getTerm().equals(term)) {
+                String summary = pair.getTerm() + " " + pair.getDef();
+                return summary;
+            }
+        }
+        return null;
     }
 
     void removeCard(String term) {
-        this.map.remove(term);
+        for (Pair pair : map.keySet()) {
+            if (pair.getTerm().equals(term)) {
+                this.map.remove(pair);
+            }
+        }
     }
 
     String getDefinition(String term) {
-        return map.get(term);
+        for (Pair pair : map.keySet()
+        ) {
+            if (pair.getTerm().equals(term)) {
+                return pair.getDef();
+            }
+        }
+        return null;
     }
 
     void updateOrAddCard(String term, String def) {
-        if (map.containsKey(term)) {
-            map.remove(term);
-            map.put(term, def);
-        } else {
-            map.put(term, def);
-        }
+       for (Pair pair: map.keySet()){
+           if (pair.getTerm().equals(term)){
+               map.remove(pair);
+               Pair newPair = new Pair(term,def);
+               map.put(newPair, 0); //TODO надо дописать приём Integer
+           }
+       }
     }
+
 
     String getRandomTerm() {
         Random random = new Random();
@@ -87,6 +125,24 @@ class FlashCardDeck {
         Object[] terms = this.getSetTerm().toArray();
         return terms[randomCardNumber].toString();
     }
+}
 
+
+class Pair {
+    String term;
+    String def;
+
+    public Pair(String term, String def) {
+        this.term = term;
+        this.def = def;
+    }
+
+    public String getDef() {
+        return def;
+    }
+
+    public String getTerm() {
+        return term;
+    }
 
 }
