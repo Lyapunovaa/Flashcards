@@ -5,9 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Game {
     FlashCardDeck flashCardDeck = new FlashCardDeck();
@@ -20,7 +18,7 @@ public class Game {
 
     public void menu() throws IOException {
 
-        System.out.println("Input the action (add, remove, import, export, ask, exit)");
+        System.out.println("Input the action (add, remove, import, export, ask, exit, reset, cards)");
         String choice = scanner.nextLine();
         switch (choice) {
             case "add": {
@@ -44,6 +42,12 @@ public class Game {
                 menu();
                 break;
             }
+
+            case "hardest card":{
+                hardestCard();
+                menu();
+                break;
+            }
             case "import": {
                 importDeck();
                 menu();
@@ -55,18 +59,35 @@ public class Game {
                 break;
             }
             case "cards": {
+
                 cards();
                 menu();
                 break;
             }
+
+            case "reset": {
+                reset();
+                menu();
+                break;
+            }
+
             case "exit": {
                 System.out.println("Bye bye!");
                 break;
+            }
+
+            case "set": {
+                System.out.println(flashCardDeck.getSetTerm().toString());
             }
             default: {
                 menu();
             }
         }
+    }
+
+    public void reset() {
+        flashCardDeck.resetStat();
+        System.out.println("Now you dont have errors");
     }
 
     public void ask() {
@@ -188,7 +209,19 @@ public class Game {
         ) {
             System.out.println(flashCardDeck.printEntryForExport(s));
         }
-
     }
 
+    void hardestCard(){
+        Map <String, Integer> hardestCards = new TreeMap<>();
+        hardestCards = flashCardDeck.hardestCard();
+        int count = hardestCards.size();
+        if (count > 1){
+            System.out.printf("The hardest cards are " + flashCardDeck.readyString(flashCardDeck.hardestCard()) + ". You have %s errors answering them.", flashCardDeck.getMaxErrors());
+        } else if (count == 1){
+            System.out.printf("The hardest card is %s. You have %s errors answering it.\n", flashCardDeck.readyString(flashCardDeck.hardestCard()), flashCardDeck.getMaxErrors());
+        } else if (count == 0){
+            System.out.println("You have no hardest card");
+        }
+
+    }
 }

@@ -142,8 +142,60 @@ class FlashCardDeck {
             return terms[randomCardNumber].toString();
         }
     }
-}
 
+    void resetStat() {
+        map.replaceAll((p, v) -> 0);
+    }
+
+    Map<String, Integer> hardestCard() {
+
+        Map<String, Integer> cardsWithErrors = new TreeMap<>();
+        int maxValue = 0;
+        for (Pair pair : map.keySet()
+        ) {
+            if (map.get(pair) >= maxValue) {
+                maxValue = map.get(pair);
+            }
+        }
+
+        for (Pair pair : map.keySet()) {
+            if (map.get(pair) == maxValue) {
+                cardsWithErrors.put(pair.getTerm(), maxValue);
+
+            }
+        }
+        return cardsWithErrors;
+    }
+
+    String readyString(Map<String, Integer> hardestCards) {
+        String cards = "";
+        for (int i = 0; i <= hardestCards.size(); i++) {
+
+        }
+
+
+        for (Pair pair : map.keySet()) {
+            if (map.get(pair).equals(getMaxErrors())) {
+                cards = cards + "\"" + pair.getTerm() + "\", ";
+            }
+        }
+        cards = cards.substring(0, cards.length() - 2);
+        return cards;
+    }
+
+    Integer getMaxErrors() {
+        int maxValue = 0;
+        for (Pair pair : map.keySet()
+        ) {
+            if (map.get(pair) >= maxValue) {
+                maxValue = map.get(pair);
+            }
+        }
+        return maxValue;
+    }
+
+
+}
 
 class Pair {
     String term;
