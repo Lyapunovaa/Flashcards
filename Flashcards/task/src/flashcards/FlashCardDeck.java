@@ -158,10 +158,13 @@ class FlashCardDeck {
             }
         }
 
-        for (Pair pair : map.keySet()) {
-            if (map.get(pair) == maxValue) {
-                cardsWithErrors.put(pair.getTerm(), maxValue);
+        if (maxValue > 0) {
 
+            for (Pair pair : map.keySet()) {
+                if (map.get(pair) == maxValue) {
+                    cardsWithErrors.put(pair.getTerm(), maxValue);
+
+                }
             }
         }
         return cardsWithErrors;

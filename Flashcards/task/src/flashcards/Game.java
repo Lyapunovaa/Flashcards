@@ -10,6 +10,7 @@ import java.util.*;
 public class Game {
     FlashCardDeck flashCardDeck = new FlashCardDeck();
     Scanner scanner = new Scanner(System.in);
+    List<String> log = new LinkedList<>();
 
     String repairScanner() { //метод который чинит nextLine после nextInt
         String empty = scanner.nextLine();
@@ -18,7 +19,7 @@ public class Game {
 
     public void menu() throws IOException {
 
-        System.out.println("Input the action (add, remove, import, export, ask, exit, reset, cards)");
+        System.out.println("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats)");
         String choice = scanner.nextLine();
         switch (choice) {
             case "add": {
@@ -28,7 +29,7 @@ public class Game {
             }
             case "ask": {
                 if (flashCardDeck.isEmpty()) {
-                    System.out.println("No cards in deck");
+                    System.out.println("No cards in deck\n");
                     menu();
                 } else {
                     ask();
@@ -65,7 +66,7 @@ public class Game {
                 break;
             }
 
-            case "reset": {
+            case "reset stats": {
                 reset();
                 menu();
                 break;
@@ -87,7 +88,7 @@ public class Game {
 
     public void reset() {
         flashCardDeck.resetStat();
-        System.out.println("Now you dont have errors");
+        System.out.println("Card statistics has been reset.\n");
     }
 
     public void ask() {
@@ -113,7 +114,7 @@ public class Game {
                     }
                 } else {
                     flashCardDeck.addError(randomTerm);
-                    System.out.println("Wrong answer. The correct one is \"" + flashCardDeck.getDefinition(randomTerm) + "\".");
+                    System.out.println("Wrong answer. The correct one is \"" + flashCardDeck.getDefinition(randomTerm) + "\".\n");
                 }
 
 
@@ -148,7 +149,7 @@ public class Game {
             String term = scanner.nextLine();
             if (flashCardDeck.getSetTerm().contains(term)) {
                 flashCardDeck.removeCard(term);
-                System.out.println("The card has been removed.");
+                System.out.println("The card has been removed.\n");
                 break;
             } else {
                 System.out.printf("Can't remove \"%s\": there is no such card.\n", term);
@@ -200,7 +201,7 @@ public class Game {
             read.close();
             System.out.printf("%s cards have been loaded.\n", countOfStrings);
         } else {
-            System.out.println("File not found.");
+            System.out.println("File not found.\n");
         }
     }
 
@@ -216,12 +217,19 @@ public class Game {
         hardestCards = flashCardDeck.hardestCard();
         int count = hardestCards.size();
         if (count > 1){
-            System.out.printf("The hardest cards are " + flashCardDeck.readyString(flashCardDeck.hardestCard()) + ". You have %s errors answering them.", flashCardDeck.getMaxErrors());
+            System.out.printf("The hardest cards are " + flashCardDeck.readyString(flashCardDeck.hardestCard()) + ". You have %s errors answering them.\n", flashCardDeck.getMaxErrors());
         } else if (count == 1){
             System.out.printf("The hardest card is %s. You have %s errors answering it.\n", flashCardDeck.readyString(flashCardDeck.hardestCard()), flashCardDeck.getMaxErrors());
         } else if (count == 0){
-            System.out.println("You have no hardest card");
+            System.out.println("There are no cards with errors\n");
         }
+    }
+
+    void logInput(){
+
+    }
+
+    void logOutput(){
 
     }
 }
