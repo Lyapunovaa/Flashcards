@@ -21,6 +21,7 @@ public class Game {
 
         System.out.println("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats)");
         String choice = scanner.nextLine();
+        audit(choice);
         switch (choice) {
             case "add": {
                 add();
@@ -75,6 +76,10 @@ public class Game {
             case "exit": {
                 System.out.println("Bye bye!");
                 break;
+            }
+
+            case "log":{
+                System.out.println(log.toString());
             }
 
             case "set": {
@@ -165,7 +170,6 @@ public class Game {
         fileName = fileName + ".txt";
         File dir = new File("C:\\Users\\Likvi\\Documents\\export\\");
         File exportFile = new File(dir, fileName);
-
         FileWriter export = new FileWriter(exportFile);
         try {
             for (String s : flashCardDeck.getSetTerm()
@@ -217,7 +221,9 @@ public class Game {
         hardestCards = flashCardDeck.hardestCard();
         int count = hardestCards.size();
         if (count > 1){
-            System.out.printf("The hardest cards are " + flashCardDeck.readyString(flashCardDeck.hardestCard()) + ". You have %s errors answering them.\n", flashCardDeck.getMaxErrors());
+        String output = String.format("The hardest cards are " + flashCardDeck.readyString(flashCardDeck.hardestCard()) + ". You have %s errors answering them.", flashCardDeck.getMaxErrors());
+            System.out.println(output);
+            audit(output);
         } else if (count == 1){
             System.out.printf("The hardest card is %s. You have %s errors answering it.\n", flashCardDeck.readyString(flashCardDeck.hardestCard()), flashCardDeck.getMaxErrors());
         } else if (count == 0){
@@ -225,11 +231,8 @@ public class Game {
         }
     }
 
-    void logInput(){
-
+    void audit(String saveThis)  {
+       log.add(saveThis);
     }
 
-    void logOutput(){
-
-    }
 }
